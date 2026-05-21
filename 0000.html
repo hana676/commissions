@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hana's Commissions</title>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+
+:root {
+  --pink: #ffb7c5;
+  --lavender: #d4b8f0;
+  --mint: #b5ead7;
+  --cream: #fff5f8;
+  --card: #fffafc;
+  --text: #5a3e52;
+  --muted: #a07b8e;
+  --border: #f0d0de;
+  --red: #e07090;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+header {
+  text-align: center;
+  padding: 3rem 1rem 2rem;
+}
+
+.title {
+  font-family: 'Pacifico', cursive;
+  font-size: clamp(4rem, 16vw, 9rem);
+  background: linear-gradient(135deg, #f9a8c9, #c9a8f0, #a8d8c9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  letter-spacing: -2px;
+  filter: drop-shadow(0 3px 12px rgba(200, 130, 180, 0.2));
+}
+
+.subtitle {
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  letter-spacing: 0.06em;
+}
+
+.stars {
+  color: var(--lavender);
+  font-size: 1.3rem;
+  letter-spacing: 0.4em;
+  margin: 0.4rem 0;
+}
+
+main {
+  max-width: 660px;
+  margin: 0 auto 5rem;
+  padding: 0 1rem;
+}
+
+.card {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 24px;
+  padding: 2.5rem;
+  box-shadow: 0 6px 32px rgba(200, 130, 160, 0.14);
+}
+
+.note {
+  background: linear-gradient(135deg, #fff0f6, #f3eeff);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 0.9rem 1.1rem;
+  font-size: 0.88rem;
+  color: var(--muted);
+  font-weight: 700;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.note strong { color: var(--pink); }
+
+.field { margin-bottom: 1.8rem; }
+
+.field label {
+  display: block;
+  font-weight: 800;
+  font-size: 0.98rem;
+  margin-bottom: 0.5rem;
+}
+
+.field.grayed {
+  opacity: 0.4;
+  pointer-events: none;
+  user-select: none;
+}
+
+.field.grayed .not-available { display: block; }
+
+.not-available {
+  display: none;
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 600;
+  margin-top: 0.4rem;
+  font-style: italic;
+}
+
+.num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink), var(--lavender));
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  margin-right: 0.4rem;
+}
+
+.hint {
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-weight: 600;
+  margin: -0.2rem 0 0.5rem 1.9rem;
+}
+
+.req { color: #f088b0; }
+
+input[type="text"] {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+input[type="text"]:focus {
+  border-color: var(--lavender);
+  box-shadow: 0 0 0 3px rgba(200, 160, 240, 0.18);
+}
+
+input[type="text"].err {
+  border-color: var(--red) !important;
+  box-shadow: 0 0 0 3px rgba(224, 112, 144, 0.13) !important;
+  animation: shake 0.3s ease;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  padding: 2px;
+  border: 2px solid transparent;
+  border-radius: 14px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.pills.err {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(224, 112, 144, 0.13);
+  animation: shake 0.3s ease;
+}
+
+.pills input { display: none; }
+
+.pills label {
+  padding: 0.45rem 1rem;
+  border-radius: 50px;
+  border: 2px solid var(--border);
+  font-size: 0.88rem;
+  font-weight: 700;
+  background: #fff;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+.pills label:hover {
+  border-color: var(--lavender);
+  background: linear-gradient(135deg, #fff5f9, #f5f0ff);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(200, 160, 240, 0.13);
+}
+
+.pills input:checked + label {
+  background: linear-gradient(135deg, var(--pink), var(--lavender));
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(200, 130, 180, 0.28);
+  transform: translateY(-1px);
+}
+
+.pills input:checked + label::before {
+  content: '✦ ';
+  font-size: 0.7em;
+}
+
+.pills label.featured {
+  border-color: var(--pink);
+  background: linear-gradient(135deg, #fff0f5, #f8f0ff);
+  font-size: 0.95rem;
+  padding: 0.55rem 1.2rem;
+}
+
+.pills label.featured:hover {
+  background: linear-gradient(135deg, #ffe8f2, #efe8ff);
+}
+
+.pills input:checked + label.featured {
+  background: linear-gradient(135deg, var(--pink), var(--lavender));
+  border-color: transparent;
+}
+
+.pill-divider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--border);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0.2rem 0;
+}
+
+.pill-divider::before,
+.pill-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.art-desc {
+  display: none;
+  margin-top: 0.55rem;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--muted);
+  background: linear-gradient(135deg, #fff5f9, #f5f0ff);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 0.6rem 0.9rem;
+  line-height: 1.5;
+}
+
+.art-desc.show { display: block; }
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stepper button {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: #fff;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.stepper button:hover {
+  background: var(--pink);
+  border-color: var(--pink);
+  color: #fff;
+}
+
+.stepper input[type="number"] {
+  width: 3.5rem;
+  text-align: center;
+  padding: 0.5rem;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text);
+  background: #fff;
+  outline: none;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+input[type=number] { -moz-appearance: textfield; }
+
+hr {
+  border: none;
+  border-top: 2px dashed var(--border);
+  margin: 1.5rem 0;
+}
+
+textarea {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  background: #fff;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+textarea:focus {
+  border-color: var(--lavender);
+  box-shadow: 0 0 0 3px rgba(200, 160, 240, 0.18);
+}
+
+.error-msg {
+  display: none;
+  color: var(--red);
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-top: 0.35rem;
+}
+
+.error-msg.show { display: block; }
+
+.tos-toggle {
+  width: 100%;
+  background: none;
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 0.85rem 1.1rem;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.tos-toggle:hover { border-color: var(--lavender); color: var(--text); }
+
+.tos-toggle.open {
+  border-radius: 14px 14px 0 0;
+  border-bottom-color: transparent;
+}
+
+.tos-toggle .arrow {
+  font-size: 0.75rem;
+  transition: transform 0.25s ease;
+}
+
+.tos-toggle.open .arrow { transform: rotate(180deg); }
+
+.tos-body {
+  display: none;
+  border: 2px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 14px 14px;
+  padding: 1.1rem 1.2rem;
+  background: linear-gradient(135deg, #fff8fb, #f8f4ff);
+  margin-bottom: 1.8rem;
+}
+
+.tos-body.open { display: block; }
+
+.tos-body ol {
+  padding-left: 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.tos-body li {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.submit {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 1rem;
+  border: none;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #f9a8c9, #c9a8f0, #a8d8c9);
+  background-size: 200% 200%;
+  animation: gradshift 4s ease infinite;
+  color: #fff;
+  font-family: 'Pacifico', cursive;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 5px 24px rgba(200, 130, 180, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+}
+
+.submit:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(200, 130, 180, 0.4); }
+.submit:disabled { opacity: 0.65; cursor: not-allowed; }
+
+#confirmation {
+  display: none;
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+#confirmation.show { display: block; }
+
+#confirmation .icon {
+  font-size: 4.5rem;
+  display: block;
+  animation: popin 0.5s cubic-bezier(.3, 1.6, .5, 1) both;
+}
+
+#confirmation h2 {
+  font-family: 'Pacifico', cursive;
+  font-size: 2.2rem;
+  background: linear-gradient(135deg, var(--pink), var(--lavender));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0.8rem 0 0.5rem;
+}
+
+#confirmation p {
+  color: var(--muted);
+  font-weight: 700;
+  line-height: 1.7;
+}
+
+.reset-btn {
+  margin-top: 1.8rem;
+  background: none;
+  border: 2px solid var(--border);
+  border-radius: 50px;
+  padding: 0.5rem 1.4rem;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.reset-btn:hover { border-color: var(--lavender); color: var(--text); }
+
+@keyframes gradshift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+@keyframes popin {
+  from { transform: scale(0.4); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@media (max-width: 480px) {
+  .card { padding: 1.5rem 1.1rem; }
+}
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="stars">✦ ˚ ✦ ˚ ✦</div>
+  <h1 class="title">HANA</h1>
+  <div class="stars">✦ ˚ ✦ ˚ ✦</div>
+  <p class="subtitle">commission request form ✿</p>
+</header>
+
+<main>
+<div class="card">
+
+  <div id="confirmation">
+    <span class="icon">🌸</span>
+    <h2>yay, sent!!</h2>
+    <p>i got your request ✦ i'll slide into your dms<br>soon to confirm and share more details!<br><br>thank you so much for commissioning me 💖</p>
+    <button class="reset-btn" onclick="resetForm()">send another one</button>
+  </div>
+
+  <form id="form" novalidate>
+    <input type="hidden" name="calculated_price_usd" id="price">
+    <input type="hidden" name="_subject" value="✦ New Commission Request!">
+
+    <div class="note">✦ <strong>slots are limited</strong>, i'll reply in the order i receive requests 🌸</div>
+
+    <div class="field">
+      <label for="handle"><span class="num">1</span> your discord / insta / twitter handle <span class="req">*</span></label>
+      <p class="hint">make sure your dms are open!</p>
+      <input type="text" id="handle" name="handle" placeholder="@yourhandle" autocomplete="off">
+      <div class="error-msg" id="e-handle">please enter your handle!</div>
+    </div>
+
+    <hr>
+
+    <div class="field">
+      <label><span class="num">2</span> artwork type <span class="req">*</span></label>
+      <div class="pills" id="p-art_type">
+        <input type="radio" name="art_type" id="at_flat" value="flat" onchange="updateArtDesc()">
+        <label for="at_flat" class="featured">flat colored ($100)</label>
+        <input type="radio" name="art_type" id="at_full" value="rendered" onchange="updateArtDesc()">
+        <label for="at_full" class="featured">fully rendered ($165)</label>
+        <div class="pill-divider">other</div>
+        <input type="radio" name="art_type" id="at_ref" value="refsheet" onchange="updateArtDesc()">
+        <label for="at_ref">reference sheet ($300)</label>
+        <input type="radio" name="art_type" id="at_sticker" value="sticker" onchange="updateArtDesc()">
+        <label for="at_sticker">emoji pack ($100)</label>
+        <input type="radio" name="art_type" id="at_stickerpack" value="stickerpack" onchange="updateArtDesc()">
+        <label for="at_stickerpack">sticker pack ($200)</label>
+      </div>
+      <div class="art-desc" id="art-desc"></div>
+      <div class="error-msg" id="e-art_type">please pick one!</div>
+    </div>
+
+    <hr>
+
+    <div class="field">
+      <label><span class="num">3</span> SFW or NSFW? <span class="req">*</span></label>
+      <div class="pills" id="p-rating">
+        <input type="radio" name="rating" id="r_sfw" value="sfw">
+        <label for="r_sfw">SFW</label>
+        <input type="radio" name="rating" id="r_nsfw" value="nsfw">
+        <label for="r_nsfw">NSFW (+30%)</label>
+      </div>
+      <div class="error-msg" id="e-rating">please pick one!</div>
+    </div>
+
+    <hr>
+
+    <div class="field" id="field-sona">
+      <label><span class="num">4</span> do you want my sona in your artwork? :3 <span class="req">*</span></label>
+      <div class="pills" id="p-sona">
+        <input type="radio" name="sona" id="s_sfw" value="yes_sfw">
+        <label for="s_sfw">yes, SFW (+50%)</label>
+        <input type="radio" name="sona" id="s_nsfw" value="yes_nsfw">
+        <label for="s_nsfw">yes, NSFW (+80%)</label>
+        <input type="radio" name="sona" id="s_no" value="no">
+        <label for="s_no">no</label>
+      </div>
+      <div class="error-msg" id="e-sona">please pick one!</div>
+      <span class="not-available">not available for this artwork type</span>
+    </div>
+
+    <hr>
+
+    <div class="field" id="field-background">
+      <label><span class="num">5</span> do you want a detailed background? <span class="req">*</span></label>
+      <div class="pills" id="p-background">
+        <input type="radio" name="background" id="bg_yes" value="yes">
+        <label for="bg_yes">yes (+30%)</label>
+        <input type="radio" name="background" id="bg_no" value="no">
+        <label for="bg_no">no</label>
+      </div>
+      <div class="error-msg" id="e-background">please pick one!</div>
+      <span class="not-available">not available for this artwork type</span>
+    </div>
+
+    <hr>
+
+    <div class="field">
+      <label><span class="num">6</span> should i keep this art private? <span class="req">*</span></label>
+      <div class="pills" id="p-private">
+        <input type="radio" name="private" id="pv_yes" value="yes">
+        <label for="pv_yes">yes (+10%)</label>
+        <input type="radio" name="private" id="pv_no" value="no">
+        <label for="pv_no">no</label>
+      </div>
+      <div class="error-msg" id="e-private">please pick one!</div>
+    </div>
+
+    <hr>
+
+    <div class="field">
+      <label><span class="num">7</span> do you want me to finish it super fast? :3 <span class="req">*</span></label>
+      <div class="pills" id="p-rush">
+        <input type="radio" name="rush" id="ru_yes" value="yes">
+        <label for="ru_yes">yes, 1 week (+20%)</label>
+        <input type="radio" name="rush" id="ru_no" value="no">
+        <label for="ru_no">no rush, 3 weeks</label>
+      </div>
+      <div class="error-msg" id="e-rush">please pick one!</div>
+    </div>
+
+    <hr>
+
+    <div class="field" id="field-alts">
+      <label for="alts"><span class="num">8</span> number of alts</label>
+      <p class="hint">each alt is +10%, max 10</p>
+      <div class="stepper">
+        <button type="button" onclick="step('alts', -1)">-</button>
+        <input type="number" id="alts" name="alts" value="0" min="0" max="10" readonly>
+        <button type="button" onclick="step('alts', 1)">+</button>
+      </div>
+      <span class="not-available">not available for this artwork type</span>
+    </div>
+
+    <hr>
+
+    <div class="field" id="field-characters">
+      <label for="characters"><span class="num">9</span> number of characters in total</label>
+      <p class="hint" id="chars-hint">defaults to 1, each extra character is +50%</p>
+      <div class="stepper">
+        <button type="button" onclick="step('characters', -1)">-</button>
+        <input type="number" id="characters" name="characters" value="1" min="1" max="20" readonly>
+        <button type="button" onclick="step('characters', 1)">+</button>
+      </div>
+      <span class="not-available">not available for this artwork type</span>
+    </div>
+
+    <hr>
+
+    <div class="field">
+      <label for="notes">
+        <span class="num" style="background: linear-gradient(135deg, var(--mint), var(--lavender))">✦</span>
+        anything else i should know?
+      </label>
+      <textarea id="notes" name="notes" rows="4"></textarea>
+    </div>
+
+    <hr>
+
+    <button type="button" class="tos-toggle" id="tos-btn" onclick="toggleTos()">
+      terms of service, please read before submitting
+      <span class="arrow">▼</span>
+    </button>
+    <div class="tos-body" id="tos-body">
+      <ol>
+        <li>i take the full payment upfront! for more expensive commissions a payment split can be discussed :)</li>
+        <li>2 changes are allowed at the sketch phase, any revisions after that will require additional pay.</li>
+        <li>i do not draw extreme fetishes (gore, scat, etc.)</li>
+        <li>additional pay may be required for complicated character designs.</li>
+      </ol>
+    </div>
+
+    <button type="submit" class="submit">send it! ✦</button>
+  </form>
+
+</div>
+</main>
+
+<script>
+
+var artDescs = {
+  flat: "a flat colored art full body of any character",
+  rendered: "a fully rendered art full body of any character",
+  refsheet: "reference sheet contains 2 full body projections, one headshot and misc information",
+  sticker: "emoji pack contains 8 emojis (you can choose the emotions)",
+  stickerpack: "sticker pack contains 8 stickers (you can choose the emotions)"
+}
+
+var prices = { flat: 100, rendered: 165, refsheet: 300, sticker: 100, stickerpack: 200 }
+
+var grayedFields = ['field-sona', 'field-background', 'field-alts', 'field-characters']
+var grayedTypes = ['refsheet', 'sticker', 'stickerpack']
+
+function getArtType() {
+  var el = document.querySelector('input[name="art_type"]:checked')
+  return el ? el.value : ''
+}
+
+function updateArtDesc() {
+  var val = getArtType()
+  var box = document.getElementById('art-desc')
+  box.textContent = artDescs[val] || ''
+  box.classList.toggle('show', !!artDescs[val])
+
+  var shouldGray = grayedTypes.indexOf(val) != -1
+  for (var i = 0; i < grayedFields.length; i++) {
+    document.getElementById(grayedFields[i]).classList.toggle('grayed', shouldGray)
+  }
+}
+
+function hasSona() {
+  var s = document.querySelector('input[name="sona"]:checked')
+  return s && s.value != "no"
+}
+
+function updateCharHint() {
+  var el = document.getElementById('characters')
+  var min = hasSona() ? 2 : 1
+  el.min = min
+  if (parseInt(el.value) < min) el.value = min
+  document.getElementById('chars-hint').textContent = hasSona()
+    ? 'you + my sona = 2 included ✦ each extra is +50%'
+    : 'defaults to 1, each extra character is +50%'
+}
+
+function step(id, d) {
+  var el = document.getElementById(id)
+  var v = parseInt(el.value) + d
+  if (v >= parseInt(el.min) && v <= parseInt(el.max)) {
+    el.value = v
+    if (id == 'characters') updateCharHint()
+    calcPrice()
+  }
+}
+
+function calcPrice() {
+  var val = getArtType()
+  var base = prices[val] || 0
+  if (!base) { document.getElementById('price').value = ''; return }
+
+  var m = 1
+  var rating = document.querySelector('input[name="rating"]:checked')
+  if (rating && rating.value == "nsfw") m += 0.30
+
+  var sona = document.querySelector('input[name="sona"]:checked')
+  if (sona && sona.value == "yes_sfw") m += 0.50
+  if (sona && sona.value == "yes_nsfw") m += 0.80
+
+  var bg = document.querySelector('input[name="background"]:checked')
+  if (bg && bg.value == "yes") m += 0.30
+
+  var priv = document.querySelector('input[name="private"]:checked')
+  if (priv && priv.value == "yes") m += 0.10
+
+  var rush = document.querySelector('input[name="rush"]:checked')
+  if (rush && rush.value == "yes") m += 0.20
+
+  var price = base * m
+
+  var alts = parseInt(document.getElementById('alts').value) || 0
+  price += price * alts * 0.10
+
+  var chars = parseInt(document.getElementById('characters').value) || 1
+  var extra = chars - (hasSona() ? 2 : 1)
+  if (extra > 0) price += base * m * extra * 0.50
+
+  document.getElementById('price').value = '$' + price.toFixed(2)
+}
+
+function toggleTos() {
+  document.getElementById('tos-btn').classList.toggle('open')
+  document.getElementById('tos-body').classList.toggle('open')
+}
+
+function resetForm() {
+  document.getElementById('form').reset()
+  document.getElementById('form').style.display = ''
+  document.getElementById('confirmation').classList.remove('show')
+  document.getElementById('art-desc').classList.remove('show')
+  document.getElementById('price').value = ''
+  for (var i = 0; i < grayedFields.length; i++) {
+    document.getElementById(grayedFields[i]).classList.remove('grayed')
+  }
+  document.querySelector('.submit').textContent = 'send it! ✦'
+  document.querySelector('.submit').disabled = false
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+document.getElementById('form').addEventListener('change', function(e) {
+  calcPrice()
+  if (e.target.name == 'art_type') updateArtDesc()
+  if (e.target.name == 'sona') updateCharHint()
+  var pg = document.getElementById('p-' + e.target.name)
+  var err = document.getElementById('e-' + e.target.name)
+  if (pg) pg.classList.remove('err')
+  if (err) err.classList.remove('show')
+})
+
+document.getElementById('handle').addEventListener('input', function() {
+  if (this.value.trim()) {
+    this.classList.remove('err')
+    document.getElementById('e-handle').classList.remove('show')
+  }
+})
+
+function validate() {
+  var ok = true
+  var first = null
+
+  var h = document.getElementById('handle')
+  var hEmpty = !h.value.trim()
+  h.classList.toggle('err', hEmpty)
+  document.getElementById('e-handle').classList.toggle('show', hEmpty)
+  if (hEmpty) { ok = false; first = h }
+
+  var groups = ['art_type', 'rating', 'sona', 'background', 'private', 'rush']
+  for (var i = 0; i < groups.length; i++) {
+    var name = groups[i]
+    var pg = document.getElementById('p-' + name)
+    var err = document.getElementById('e-' + name)
+    var parentField = document.getElementById('field-' + name)
+
+    if (parentField && parentField.classList.contains('grayed')) {
+      pg.classList.remove('err')
+      err.classList.remove('show')
+      continue
+    }
+
+    var missing = !document.querySelector('input[name="' + name + '"]:checked')
+    pg.classList.toggle('err', missing)
+    err.classList.toggle('show', missing)
+    if (missing && !first) { ok = false; first = pg }
+  }
+
+  if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  return ok
+}
+
+document.getElementById('form').addEventListener('submit', async function(e) {
+  e.preventDefault()
+  if (!validate()) return
+  calcPrice()
+
+  var btn = document.querySelector('.submit')
+  btn.textContent = 'sending... ✦'
+  btn.disabled = true
+
+  try {
+    var res = await fetch('https://formspree.io/f/xeevnjvq', {
+      method: 'POST',
+      body: new FormData(this),
+      headers: { 'Accept': 'application/json' }
+    })
+    if (res.ok) {
+      this.style.display = 'none'
+      document.getElementById('confirmation').classList.add('show')
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      btn.textContent = 'send it! ✦'
+      btn.disabled = false
+      alert('something went wrong, please try again or dm me directly!')
+    }
+  } catch(err) {
+    btn.textContent = 'send it! ✦'
+    btn.disabled = false
+    alert('something went wrong, please try again or dm me directly!')
+  }
+})
+
+</script>
+</body>
+</html>
